@@ -1,9 +1,10 @@
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:e_commerce/utils/colors.dart';
 import 'package:e_commerce/widgets/big_text.dart';
 import 'package:e_commerce/widgets/icon_and_text_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/dimensions.dart';
 import '../widgets/small_text.dart';
 
 class FoodPageBody extends StatefulWidget {
@@ -16,176 +17,234 @@ class FoodPageBody extends StatefulWidget {
 class _FoodPageBodyState extends State<FoodPageBody> {
   PageController pageController = PageController(viewportFraction: 0.85);
   var _currPageValue = 0.0;
-  double _scaleFactor= 0.8;
-  double _height= 220;
-  
+  double _scaleFactor = 0.8;
+  double _height = Dimensions.pageViewContainer;
+
   @override
-  void initState (){
+  void initState() {
     super.initState();
-    pageController.addListener(() { 
+    pageController.addListener(() {
       setState(() {
-        _currPageValue =  pageController.page!;
+        _currPageValue = pageController.page!;
       });
     });
   }
 
   @override
-  void dispose(){
+  void dispose() {
     pageController.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      //color: Colors.red,
-      height: 320,
-      child: PageView.builder(
-          controller: pageController,
-          itemCount: 5,
-          itemBuilder: (context, position) {
-            return _buildPageItem(position);
-          }),
+    return Column(
+      children: [
+        //Slider Section
+        Container(
+          //color: Colors.red,
+          height: Dimensions.pageView,
+          child: PageView.builder(
+              controller: pageController,
+              itemCount: 5,
+              itemBuilder: (context, position) {
+                return _buildPageItem(position);
+              }),
+        ),
+        //Dots Section
+        DotsIndicator(
+          dotsCount: 5,
+          position: _currPageValue,
+          decorator: DotsDecorator(
+            activeColor: AppColors.mainColor,
+            size: const Size.square(9.0),
+            activeSize: const Size(18.0, 9.0),
+            activeShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0)),
+          ),
+        ),
+
+        //Popular Text
+        SizedBox(height: Dimensions.height30,),
+
+        Container(
+          margin: EdgeInsets.only(left: Dimensions.width30),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              BigText(text: "Yemekler"),
+              SizedBox(width: Dimensions.width10,),
+              Container(
+                margin: EdgeInsets.only(bottom:3),
+                child: BigText(text: ".",color: Colors.black26,),
+              ),
+              SizedBox(width: Dimensions.width10,),
+
+              //Popular Text
+              Container(
+                margin: EdgeInsets.only(bottom:2),
+                child: SmallText(text: "Popüler Yemekler"),
+              ),
+
+              
+            ],
+          ),
+        ),
+      
+      ],
     );
   }
 
   Widget _buildPageItem(int index) {
-  Matrix4 matrix = new Matrix4.identity();
-  
-  if(index == _currPageValue.floor()){ // responsible with current one
-    var currScale = 1-(_currPageValue - index)*(1-_scaleFactor);
-    var currTrans = _height*(1-currScale)/2;
-    matrix = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
+    Matrix4 matrix = new Matrix4.identity();
 
-  }else if(index == _currPageValue.floor()+1){ // responsible with next one
-    var currScale = _scaleFactor+(_currPageValue-index+1)*(1-_scaleFactor);
-    var currTrans = _height*(1-currScale)/2;
-    matrix = Matrix4.diagonal3Values(1, currScale, 1);
-    matrix = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
+    if (index == _currPageValue.floor()) {
+      // responsible with current one
+      var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else if (index == _currPageValue.floor() + 1) {
+      // responsible with next one
+      var currScale =
+          _scaleFactor + (_currPageValue - index + 1) * (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix = Matrix4.diagonal3Values(1, currScale, 1);
+      matrix = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else if (index == _currPageValue.floor() - 1) {
+      // responsible with previous one
+      var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
+      var currTrans = _height * (1 - currScale) / 2;
+      matrix = Matrix4.diagonal3Values(1, currScale, 1);
+      matrix = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, currTrans, 0);
+    } else {
+      var currScale = 0.8;
+      matrix = Matrix4.diagonal3Values(1, currScale, 1)
+        ..setTranslationRaw(0, _height * (1 - _scaleFactor) / 2, 1);
+    }
 
-  }else if(index == _currPageValue.floor()-1){ // responsible with previous one
-    var currScale = 1-(_currPageValue - index)*(1-_scaleFactor);
-    var currTrans = _height*(1-currScale)/2;
-    matrix = Matrix4.diagonal3Values(1, currScale, 1);
-    matrix = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, currTrans, 0);
-  }
-  else{
-    var currScale = 0.8;
-    matrix = Matrix4.diagonal3Values(1, currScale, 1)..setTranslationRaw(0, _height*(1-_scaleFactor)/2, 1);
+    return Transform(
+      transform: matrix,
+      child: Stack(
+        children: [
+          Container(
+            height: Dimensions.pageViewContainer,
 
-  }
-
-  return Transform(
-    transform: matrix,
-    child: Stack(
-      children: [
-        Container(
-          height: 220,
-          margin: EdgeInsets.only(
-            left: 10,
-            right: 10,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: Colors.amber,
-            image: DecorationImage(
-              image: AssetImage("assets/images/food6.png"),
-              fit: BoxFit.cover,
+            margin: EdgeInsets.only(
+              left: Dimensions.width10,
+              right: Dimensions.width10,
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            height: 120,
-            margin: EdgeInsets.only(left: 30, right: 30, bottom: 30),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(Dimensions.radius30),
+              color: Colors.amber,
+              image: DecorationImage(
+                image: AssetImage("assets/images/food6.png"),
+                fit: BoxFit.cover,
+              ),
             ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
+              height: Dimensions.pageViewTextContainer,
+              
+              margin: EdgeInsets.only(left: Dimensions.width30, right: Dimensions.width30, bottom: Dimensions.height30),
               decoration: BoxDecoration(
-                
-              ),
-              padding: EdgeInsets.only(
-                top: 10,
-                left: 15,
-                right: 15,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BigText(text: "Antalya Piyazı"),
-                  SizedBox(
-                    height: 10,
+                borderRadius: BorderRadius.circular(Dimensions.radius20),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFe8e8e8),
+                    blurRadius: 5.0,
+                    offset: Offset(0, 5),
                   ),
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          Wrap(
-                            children: List.generate(
-                              5,
-                              (index) => Icon(
-                                Icons.star,
-                                color: AppColors.mainColor,
-                                size: 15,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          SmallText(text: "4.5"),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          SmallText(text: "1287 comments"),
-                        ],
-                      ),
-                    ],
+                  BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(-5, 0),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          IconAndTextWidget(
-                            icon: Icons.circle_sharp,
-                            text: "Normal",
-                            iconColor: AppColors.iconColor1,
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          IconAndTextWidget(
-                            icon: Icons.location_on,
-                            text: "1.7km",
-                            iconColor: AppColors.mainColor,
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          IconAndTextWidget(
-                            icon: Icons.access_time_rounded,
-                            text: "32min",
-                            iconColor: AppColors.iconColor2,
-                          ),
-                        ],
-                      ),
-                    ],
+                  BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(5, 0),
                   ),
                 ],
               ),
+              child: Container(
+                
+                decoration: BoxDecoration(),
+                padding: EdgeInsets.only(
+                  top: Dimensions.height15,
+                  left: Dimensions.width15,
+                  right: Dimensions.width15,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    BigText(text: "Antalya Piyazı"),
+                    SizedBox(
+                      height: Dimensions.height10,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Wrap(
+                                children: List.generate(
+                                  5,
+                                  (index) => Icon(
+                                    Icons.star,
+                                    color: AppColors.mainColor,
+                                    size: Dimensions.starsize15,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: Dimensions.width10,
+                              ),
+                              SmallText(text: "4.5"),
+                              SizedBox(
+                                width: Dimensions.width10,
+                              ),
+                              SmallText(text: "1287 comments"),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: Dimensions.height20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconAndTextWidget(
+                          icon: Icons.circle_sharp,
+                          text: "Normal",
+                          iconColor: AppColors.iconColor1,
+                        ),
+                        SizedBox(width: Dimensions.width5,),
+                        IconAndTextWidget(
+                          icon: Icons.location_on,
+                          text: "1.7km",
+                          iconColor: AppColors.mainColor,
+                        ),
+                        SizedBox(width: Dimensions.width5,),
+                        IconAndTextWidget(
+                          icon: Icons.access_time_rounded,
+                          text: "32min",
+                          iconColor: AppColors.iconColor2,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
-
-}
-
