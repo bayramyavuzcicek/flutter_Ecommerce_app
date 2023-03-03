@@ -62,9 +62,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 borderRadius: BorderRadius.circular(5.0)),
           ),
         ),
-
         //Popular Text
-        SizedBox(height: Dimensions.height30,),
+        SizedBox(
+          height: Dimensions.height30,
+        ),
 
         Container(
           margin: EdgeInsets.only(left: Dimensions.width30),
@@ -72,23 +73,121 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               BigText(text: "Yemekler"),
-              SizedBox(width: Dimensions.width10,),
-              Container(
-                margin: EdgeInsets.only(bottom:3),
-                child: BigText(text: ".",color: Colors.black26,),
+              SizedBox(
+                width: Dimensions.width10,
               ),
-              SizedBox(width: Dimensions.width10,),
+              Container(
+                margin: EdgeInsets.only(bottom: 3),
+                child: BigText(
+                  text: ".",
+                  color: Colors.black26,
+                ),
+              ),
+              SizedBox(
+                width: Dimensions.width10,
+              ),
 
               //Popular Text
               Container(
-                margin: EdgeInsets.only(bottom:2),
+                margin: EdgeInsets.only(bottom: 2),
                 child: SmallText(text: "Popüler Yemekler"),
               ),
-
-              
             ],
           ),
         ),
+        SizedBox(
+          height: Dimensions.height30,
+        ),
+        //List of Food and images
+        // ignore: sized_box_for_whitespace
+        ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(
+                    left: Dimensions.width20,
+                    right: Dimensions.width20,
+                    bottom: Dimensions.height10),
+                child: Row(
+                  children: [
+                    //Image Section
+                    Container(
+                      height: Dimensions.listViewImgSize,
+                      width: Dimensions.listViewImgSize,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white38,
+                        image: const DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage("assets/images/food1.jpg"),
+                        ),
+                      ),
+                    ),
+                    // Text Container
+                    Expanded(
+                      child: Container(
+                        height: Dimensions.listViewTextContSize,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              topRight:
+                                  Radius.circular(Dimensions.radius20),
+                              bottomRight:
+                                  Radius.circular(Dimensions.radius20),
+                            ),
+                            color: Color.fromARGB(255, 255, 255, 255)),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: Dimensions.width10,
+                              right: Dimensions.width10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BigText(
+                                  text:
+                                      "Mexica Soslu Makarna"),
+                              SizedBox(height: Dimensions.height10,),
+                              SmallText(text: "Minerva özel mexica sosu ile"),
+                              SizedBox(height: Dimensions.height10,),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconAndTextWidget(
+                                    icon: Icons.circle_sharp,
+                                    text: "Normal",
+                                    iconColor: AppColors.iconColor1,
+                                  ),
+                                  SizedBox(
+                                    width: Dimensions.width5,
+                                  ),
+                                  IconAndTextWidget(
+                                    icon: Icons.location_on,
+                                    text: "1.7km",
+                                    iconColor: AppColors.mainColor,
+                                  ),
+                                  SizedBox(
+                                    width: Dimensions.width5,
+                                  ),
+                                  IconAndTextWidget(
+                                    icon: Icons.access_time_rounded,
+                                    text: "32min",
+                                    iconColor: AppColors.iconColor2,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
       
       ],
     );
@@ -130,7 +229,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         children: [
           Container(
             height: Dimensions.pageViewContainer,
-
             margin: EdgeInsets.only(
               left: Dimensions.width10,
               right: Dimensions.width10,
@@ -148,8 +246,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             alignment: Alignment.bottomCenter,
             child: Container(
               height: Dimensions.pageViewTextContainer,
-              
-              margin: EdgeInsets.only(left: Dimensions.width30, right: Dimensions.width30, bottom: Dimensions.height30),
+              margin: EdgeInsets.only(
+                  left: Dimensions.width30,
+                  right: Dimensions.width30,
+                  bottom: Dimensions.height30),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.radius20),
                 color: Colors.white,
@@ -170,7 +270,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                 ],
               ),
               child: Container(
-                
                 decoration: BoxDecoration(),
                 padding: EdgeInsets.only(
                   top: Dimensions.height15,
@@ -224,13 +323,17 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                           text: "Normal",
                           iconColor: AppColors.iconColor1,
                         ),
-                        SizedBox(width: Dimensions.width5,),
+                        SizedBox(
+                          width: Dimensions.width5,
+                        ),
                         IconAndTextWidget(
                           icon: Icons.location_on,
                           text: "1.7km",
                           iconColor: AppColors.mainColor,
                         ),
-                        SizedBox(width: Dimensions.width5,),
+                        SizedBox(
+                          width: Dimensions.width5,
+                        ),
                         IconAndTextWidget(
                           icon: Icons.access_time_rounded,
                           text: "32min",
